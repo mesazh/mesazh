@@ -1,18 +1,25 @@
 import express from "express";
-const app = express();
-
 import cors from "cors";
+import http from "http";
+import "./config/connection.js";
+import * as socketio from "socket.io";
+import { uRouter } from "./routes/userRoutes.js";
+
+const PORT = 5000;
+
+const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-import "./connection.js";
-import http from "http";
-const server = http.createServer(app);
-const PORT = 5001;
+app.use("/api/user", uRouter);
 
-import * as socketio from "socket.io";
+const server = http.createServer((req, res) => {
+  console.log(`request: ${req.url}`);
+  app(req, res);
+});
 
+// creating a socket server
 const io = new socketio.Server(server, {
   cors: {
     origin: "http://localhost:3000",
