@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import {User} from "../models/user.js";
-import * as generateToken from "../config/generateToken.js"
+import {generateToken} from "../config/generateToken.js"
 
 const registerUser = asyncHandler(async (req, res) => {
   // res.send("hello");
@@ -19,7 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
 
-  const user = await User.create({
+  const newUser = await User.create({
     name,
     username,
     email,
@@ -27,14 +27,14 @@ const registerUser = asyncHandler(async (req, res) => {
     picture,
   });
 
-  if (user) {
+  if (newUser) {
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      username: user.username,
-      email: user.email,
-      picture: user.picture,
-      token: generateToken(user._id),
+      _id: newUser._id,
+      name: newUser.name,
+      username: newUser.username,
+      email: newUser.email,
+      picture: newUser.picture,
+      token: generateToken(newUser._id),
     });
   } else {
     res.status(400);
